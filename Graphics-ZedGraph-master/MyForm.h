@@ -375,52 +375,93 @@ namespace Graph {
 
 		}
 #pragma endregion
-	private: 
-		double f1(double x){
-			return sin(x);
+	private:
+		double k1(double xi, double vi){
+			return 2*vi;
 		}
 
-		double f2(double x) {
-			return sin(2 * x);
+		double k2(double xi, double vi, double k1, double hi) {
+			return 2*(vi + (hi * k1)/4);
 		}
+
+		double k3(double xi, double vi, double k2, double hi) {
+			return 2 * (vi + (hi * k2) / 2);
+		}
+
+		double k4(double xi, double vi, double k1, double k2, double k3, double hi) {
+			return 2 * (vi + hi*(k1 - 2*k2 + 2*k3));
+		}
+
+		double next_x(double xi, double hi) {
+			return xi + hi;
+		}
+
+		double next_v(double xi, double vi, double hi, double k1, double k3, double k4) {
+			return vi + hi * (k1 + 4 * k3 + k4) / 6;
+		}
+
 
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 
 		GraphPane^ panel = zedGraphControl1->GraphPane;
 		panel->CurveList->Clear();
-		PointPairList^ f1_list = gcnew ZedGraph::PointPairList();
-		PointPairList^ f2_list = gcnew ZedGraph::PointPairList();
+		PointPairList^ reshenie_list = gcnew ZedGraph::PointPairList();
 
 		// Интервал, где есть данные
 		double xmin = Convert::ToDouble(textBox1->Text);
 		double xmax = Convert::ToDouble(textBox2->Text);
 
-		double h = Convert::ToDouble(textBox3->Text);
+		double hi = Convert::ToDouble(textBox3->Text);
 
+		double _k1, _k2, _k3, _k4;
 
 		double xmin_limit = xmin - 0.1;
 		double xmax_limit = xmax + 0.1;
 /*
 		double ymin_limit = -1.0;
 		double ymax_limit = 100.0;
+
+
 */
 		// Список точек
 		int i = 0;
+		double xi = xmin;
+		double vi = 1;
+
+		reshenie_list->Add(xi, vi);
 		dataGridView1->Rows->Clear();
-		for (double x = xmin; x <= xmax; x += h)
+		dataGridView1->Rows->Add();
+		dataGridView1->Rows[i]->Cells[0]->Value = i;
+		dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[6]->Value = hi;
+
+		i++;
+
+		
+		while (xi <= xmax)
 		{
+			_k1 = k1(xi, vi);
+			_k2 = k2(xi, vi, _k1, hi);
+			_k3 = k3(xi, vi, _k1, hi);
+			_k4 = k4(xi, vi, _k1, _k2, _k3, hi);
+
+			xi = xi + hi;
+			vi = next_v(xi, vi, hi, _k1, _k3, _k4);
+
+			
 			//Добавление на график
-			f1_list->Add(x, f1(x));
-			f2_list->Add(x, f2(x));
+			reshenie_list->Add(xi, vi);
 			//Печать в таблицу
 			dataGridView1->Rows->Add();
-			dataGridView1->Rows[i]->Cells[0]->Value = x; 			
-			dataGridView1->Rows[i]->Cells[1]->Value = floor(f1(x) * 1000) / 1000;
-			dataGridView1->Rows[i]->Cells[2]->Value = floor(f2(x) * 1000) / 1000;
+			dataGridView1->Rows[i]->Cells[0]->Value = i; 			
+			dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
+			dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
+			dataGridView1->Rows[i]->Cells[6]->Value = hi;
+			//dataGridView1->Rows[i]->Cells[2]->Value = floor(f2(x) * 1000) / 1000;
 			i++;
 		}
-		LineItem Curve1 = panel->AddCurve("F1(x)", f1_list, Color::Red,SymbolType::Plus);
-		LineItem Curve2 = panel->AddCurve("F2(x)", f2_list, Color::Blue, SymbolType::None);
+		LineItem^ Curve1 = panel->AddCurve("du/dx=2u", reshenie_list, Color::Red,SymbolType::Plus);
 
 		// Устанавливаем интересующий нас интервал по оси X
 		panel->XAxis->Scale->Min = xmin_limit;
