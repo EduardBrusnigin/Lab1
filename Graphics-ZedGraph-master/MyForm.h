@@ -407,7 +407,7 @@ namespace Graph {
 		GraphPane^ panel = zedGraphControl1->GraphPane;
 		panel->CurveList->Clear();
 		PointPairList^ reshenie_list = gcnew ZedGraph::PointPairList();
-		PointPairList^ reshenie2_list = gcnew ZedGraph::PointPairList();
+		PointPairList^ tochnoe_list = gcnew ZedGraph::PointPairList();
 
 		// Интервал, где есть данные
 		double xmin = Convert::ToDouble(textBox1->Text);
@@ -432,8 +432,15 @@ namespace Graph {
 		double vi = 1;
 		double v2i = 1;
 
+		double ui = 1;
+		double C = ui / exp(2 * x2i);
+
+		double OLP = ((v2i - vi) / (pow(2, 4) - 1)) * pow(2, 4);
+
+		int Nmax = 100;
+
 		reshenie_list->Add(x2i, vi);
-		reshenie2_list->Add(x2i, v2i);
+		tochnoe_list->Add(x2i, v2i);
 		dataGridView1->Rows->Clear();
 		dataGridView1->Rows->Add();
 		dataGridView1->Rows[i]->Cells[0]->Value = i;
@@ -441,12 +448,15 @@ namespace Graph {
 		dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
 		dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
 		dataGridView1->Rows[i]->Cells[6]->Value = hi;
-		dataGridView1->Rows[i / 2]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[9]->Value = floor(ui * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[10]->Value = floor(fabs(ui - vi) * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[5]->Value = floor(OLP * 1000) / 1000;
 
 		i++;
 
 		
-		while (x2i <= xmax)
+		while (x2i <= xmax && i/2 <= Nmax)
 		{	
 			_k1_2 = k1(x2i, v2i);
 			_k2_2 = k2(x2i, v2i, _k1_2, hi/2);
@@ -466,9 +476,14 @@ namespace Graph {
 
 				vi = next_v(x2i, vi, hi, _k1, _k3, _k4);
 
+
+				ui = C * exp(2 * x2i);
+
+				OLP = ((v2i - vi) / (pow(2, 4) - 1)) * pow(2, 4);
+
 				//Добавление на график
 				reshenie_list->Add(x2i, vi);
-				reshenie2_list->Add(x2i, v2i);
+				tochnoe_list->Add(x2i, ui);
 				//Печать в таблицу
 				dataGridView1->Rows->Add();
 				dataGridView1->Rows[i/2]->Cells[0]->Value = i / 2;
@@ -476,7 +491,10 @@ namespace Graph {
 				dataGridView1->Rows[i/2]->Cells[2]->Value = floor(vi * 1000) / 1000;
 				dataGridView1->Rows[i/2]->Cells[6]->Value = hi;
 				dataGridView1->Rows[i/2]->Cells[3]->Value = floor(v2i * 1000) / 1000;
-				dataGridView1->Rows[i / 2]->Cells[4]->Value = floor((vi-v2i) * 1000) / 1000;
+				dataGridView1->Rows[i/2]->Cells[4]->Value = floor((vi-v2i) * 1000) / 1000;
+				dataGridView1->Rows[i/2]->Cells[9]->Value = floor(ui * 1000) / 1000;
+				dataGridView1->Rows[i/2]->Cells[10]->Value = floor(fabs(ui-vi) * 1000) / 1000;
+				dataGridView1->Rows[i/2]->Cells[5]->Value = floor(OLP * 1000) / 1000;
 				//dataGridView1->Rows[i]->Cells[2]->Value = floor(f2(x) * 1000) / 1000;
 			}
 			
@@ -484,7 +502,7 @@ namespace Graph {
 		}
 
 		LineItem^ Curve1 = panel->AddCurve("du/dx=2u", reshenie_list, Color::Red,SymbolType::Plus);
-		LineItem^ Curve2 = panel->AddCurve("du/dx=2u", reshenie2_list, Color::Blue, SymbolType::Plus);
+		LineItem^ Curve2 = panel->AddCurve("du/dx=2u", tochnoe_list, Color::Blue, SymbolType::Plus);
 
 		// Устанавливаем интересующий нас интервал по оси X
 		panel->XAxis->Scale->Min = xmin_limit;
