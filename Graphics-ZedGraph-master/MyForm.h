@@ -62,6 +62,9 @@ namespace Graph {
 	private: System::Windows::Forms::TextBox^  textBox5;
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ОЛП;
+	private: System::Windows::Forms::TextBox^ textBox6;
+	private: System::Windows::Forms::Label^ label6;
+	private: System::Windows::Forms::CheckBox^ checkBox1;
 
 
 
@@ -108,6 +111,9 @@ namespace Graph {
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -244,12 +250,12 @@ namespace Graph {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(79, 485);
+			this->label1->Location = System::Drawing::Point(61, 487);
 			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(15, 16);
+			this->label1->Size = System::Drawing::Size(39, 16);
 			this->label1->TabIndex = 3;
-			this->label1->Text = L"a";
+			this->label1->Text = L"a (x0)";
 			// 
 			// textBox1
 			// 
@@ -285,9 +291,9 @@ namespace Graph {
 			this->label3->Location = System::Drawing::Point(383, 490);
 			this->label3->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(14, 16);
+			this->label3->Size = System::Drawing::Size(21, 16);
 			this->label3->TabIndex = 7;
-			this->label3->Text = L"h";
+			this->label3->Text = L"h0";
 			// 
 			// textBox3
 			// 
@@ -316,17 +322,17 @@ namespace Graph {
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->Size = System::Drawing::Size(64, 22);
 			this->textBox4->TabIndex = 13;
-			this->textBox4->Text = L"1";
+			this->textBox4->Text = L"100";
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(228, 542);
+			this->label4->Location = System::Drawing::Point(203, 541);
 			this->label4->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(15, 16);
+			this->label4->Size = System::Drawing::Size(42, 16);
 			this->label4->TabIndex = 12;
-			this->label4->Text = L"b";
+			this->label4->Text = L"Nmax";
 			// 
 			// textBox5
 			// 
@@ -335,7 +341,7 @@ namespace Graph {
 			this->textBox5->Name = L"textBox5";
 			this->textBox5->Size = System::Drawing::Size(63, 22);
 			this->textBox5->TabIndex = 11;
-			this->textBox5->Text = L"0";
+			this->textBox5->Text = L"1";
 			// 
 			// label5
 			// 
@@ -343,15 +349,49 @@ namespace Graph {
 			this->label5->Location = System::Drawing::Point(79, 539);
 			this->label5->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(15, 16);
+			this->label5->Size = System::Drawing::Size(21, 16);
 			this->label5->TabIndex = 10;
-			this->label5->Text = L"a";
+			this->label5->Text = L"u0";
+			// 
+			// textBox6
+			// 
+			this->textBox6->Location = System::Drawing::Point(408, 539);
+			this->textBox6->Margin = System::Windows::Forms::Padding(4);
+			this->textBox6->Name = L"textBox6";
+			this->textBox6->Size = System::Drawing::Size(80, 22);
+			this->textBox6->TabIndex = 15;
+			this->textBox6->Text = L"0,01";
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(374, 543);
+			this->label6->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(30, 16);
+			this->label6->TabIndex = 14;
+			this->label6->Text = L"eps";
+			// 
+			// checkBox1
+			// 
+			this->checkBox1->AutoSize = true;
+			this->checkBox1->Checked = true;
+			this->checkBox1->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox1->Location = System::Drawing::Point(677, 483);
+			this->checkBox1->Name = L"checkBox1";
+			this->checkBox1->Size = System::Drawing::Size(135, 20);
+			this->checkBox1->TabIndex = 16;
+			this->checkBox1->Text = L"Постоянный шаг";
+			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1144, 612);
+			this->Controls->Add(this->checkBox1);
+			this->Controls->Add(this->textBox6);
+			this->Controls->Add(this->label6);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->textBox5);
@@ -381,7 +421,7 @@ namespace Graph {
 		}
 
 		double k2(double xi, double vi, double k1, double hi) {
-			return 2*(vi + (hi * k1)/4);
+			return 2 * (vi + (hi * k1) / 2);
 		}
 
 		double k3(double xi, double vi, double k2, double hi) {
@@ -389,15 +429,11 @@ namespace Graph {
 		}
 
 		double k4(double xi, double vi, double k1, double k2, double k3, double hi) {
-			return 2 * (vi + hi*(k1 - 2*k2 + 2*k3));
+			return 2 * (vi + hi * k3);
 		}
 
-		double next_x(double xi, double hi) {
-			return xi + hi;
-		}
-
-		double next_v(double xi, double vi, double hi, double k1, double k3, double k4) {
-			return vi + hi * (k1 + 4 * k3 + k4) / 6;
+		double next_v(double vi, double hi, double k1, double k2, double k3, double k4) {
+			return vi + hi * (k1 + 2 * k2 + 2* k3 + k4) / 6;
 		}
 		
 
@@ -414,6 +450,7 @@ namespace Graph {
 		double xmax = Convert::ToDouble(textBox2->Text);
 
 		double hi = Convert::ToDouble(textBox3->Text);
+		double h2i = hi / 2;
 
 		double _k1, _k2, _k3, _k4;
 		double _k1_2, _k2_2, _k3_2, _k4_2;
@@ -428,23 +465,25 @@ namespace Graph {
 */
 		// Список точек
 		int i = 0;
-		double x2i = xmin;
-		double vi = 1;
-		double v2i = 1;
+		double xi = xmin;
+		double vi = Convert::ToDouble(textBox5->Text);
+		double vi_;
+		double v2i = vi;
 
-		double ui = 1;
-		double C = ui / exp(2 * x2i);
+		double ui = vi;
+		double C = ui / exp(2 * xi);
 
-		double OLP = ((v2i - vi) / (pow(2, 4) - 1)) * pow(2, 4);
+		double S = (v2i - vi) / (pow(2, 4) - 1);
+		double OLP = S * pow(2, 4);
 
-		int Nmax = 100;
+		int Nmax = Convert::ToInt32(textBox4->Text);
 
-		reshenie_list->Add(x2i, vi);
-		tochnoe_list->Add(x2i, v2i);
+		reshenie_list->Add(xi, vi);
+		tochnoe_list->Add(xi, v2i);
 		dataGridView1->Rows->Clear();
 		dataGridView1->Rows->Add();
 		dataGridView1->Rows[i]->Cells[0]->Value = i;
-		dataGridView1->Rows[i]->Cells[1]->Value = floor(x2i * 1000) / 1000;
+		dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
 		dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
 		dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
 		dataGridView1->Rows[i]->Cells[6]->Value = hi;
@@ -455,54 +494,88 @@ namespace Graph {
 
 		i++;
 
-		
-		while (x2i <= xmax && i/2 <= Nmax)
-		{	
-			_k1_2 = k1(x2i, v2i);
-			_k2_2 = k2(x2i, v2i, _k1_2, hi/2);
-			_k3_2 = k3(x2i, v2i, _k1_2, hi/2);
-			_k4_2 = k4(x2i, v2i, _k1_2, _k2_2, _k3_2, hi/2);
+		while (xi + hi <= xmax && i <= Nmax)
+		{
+			dataGridView1->Rows->Add();
+			dataGridView1->Rows[i]->Cells[0]->Value = i;
 
-			x2i = x2i + hi / 2;
+			// считаем коэффициенты для траектории с половинным шагом
+			_k1 = k1(xi, v2i);
+			_k2 = k2(xi, v2i, _k1, h2i);
+			_k3 = k3(xi, v2i, _k2, h2i);
+			_k4 = k4(xi, v2i, _k1, _k2, _k3, h2i);
 
-			v2i = next_v(x2i, v2i, hi/2, _k1_2, _k3_2, _k4_2);
+			// траектория с половинным шагом
+			v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
 
+			// считаем коэффициенты для траектории с половинным шагом
+			_k1 = k1(xi + h2i, v2i);
+			_k2 = k2(xi + h2i, v2i, _k1, h2i);
+			_k3 = k3(xi + h2i, v2i, _k2, h2i);
+			_k4 = k4(xi + h2i, v2i, _k1, _k2, _k3, h2i);
 
-			if (i % 2 == 0) {
-				_k1 = k1(x2i, vi);
-				_k2 = k2(x2i, vi, _k1, hi);
-				_k3 = k3(x2i, vi, _k1, hi);
-				_k4 = k4(x2i, vi, _k1, _k2, _k3, hi);
+			// траектория с половинным шагом
+			v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
 
-				vi = next_v(x2i, vi, hi, _k1, _k3, _k4);
-
-
-				ui = C * exp(2 * x2i);
-
-				OLP = ((v2i - vi) / (pow(2, 4) - 1)) * pow(2, 4);
-
-				//Добавление на график
-				reshenie_list->Add(x2i, vi);
-				tochnoe_list->Add(x2i, ui);
-				//Печать в таблицу
-				dataGridView1->Rows->Add();
-				dataGridView1->Rows[i/2]->Cells[0]->Value = i / 2;
-				dataGridView1->Rows[i/2]->Cells[1]->Value = floor(x2i * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[2]->Value = floor(vi * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[6]->Value = hi;
-				dataGridView1->Rows[i/2]->Cells[3]->Value = floor(v2i * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[4]->Value = floor((vi-v2i) * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[9]->Value = floor(ui * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[10]->Value = floor(fabs(ui-vi) * 1000) / 1000;
-				dataGridView1->Rows[i/2]->Cells[5]->Value = floor(OLP * 1000) / 1000;
-				//dataGridView1->Rows[i]->Cells[2]->Value = floor(f2(x) * 1000) / 1000;
-			}
+			dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
 			
+
+
+
+			// коэффициенты для траектории с обычным шагом
+			_k1 = k1(xi, vi);
+			_k2 = k2(xi, vi, _k1, hi);
+			_k3 = k3(xi, vi, _k2, hi);
+			_k4 = k4(xi, vi, _k1, _k2, _k3, hi);
+
+			vi_ = vi;  // сохраняем v(n) в отдельную переменную
+			vi = next_v(vi, hi, _k1, _k2, _k3, _k4);  // считаем v(n+1)
+			dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
+
+			dataGridView1->Rows[i]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
+
+
+			// коэффициенты для ОЛП
+			_k1 = k1(xi, vi_);
+			_k2 = k2(xi, vi_, _k1, h2i);
+			_k3 = k3(xi, vi_, _k2, h2i);
+			_k4 = k4(xi, vi_, _k1, _k2, _k3, h2i);
+
+			vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+			_k1 = k1(xi + h2i, vi_);
+			_k2 = k2(xi + h2i, vi_, _k1, h2i);
+			_k3 = k3(xi + h2i, vi_, _k2, h2i);
+			_k4 = k4(xi + h2i, vi_, _k1, _k2, _k3, h2i);
+
+			vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+			S = (vi_ - vi) / (pow(2, 4) - 1);
+			OLP = S * pow(2, 4);
+
+			dataGridView1->Rows[i]->Cells[5]->Value = floor(OLP * 100000) / 100000;
+				
+			
+			
+			
+			dataGridView1->Rows[i]->Cells[6]->Value = hi;
+
+
+			xi = xi + hi;
+			dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
+
+			reshenie_list->Add(xi, vi);
+
+			ui = C * exp(2 * xi);
+			tochnoe_list->Add(xi, ui);
+			dataGridView1->Rows[i]->Cells[9]->Value = floor(ui * 1000) / 1000;
+			dataGridView1->Rows[i]->Cells[10]->Value = floor(fabs(ui - vi) * 10000) / 10000;
+
 			i++;
 		}
 
-		LineItem^ Curve1 = panel->AddCurve("du/dx=2u", reshenie_list, Color::Red,SymbolType::Plus);
-		LineItem^ Curve2 = panel->AddCurve("du/dx=2u", tochnoe_list, Color::Blue, SymbolType::Plus);
+		LineItem^ Curve1 = panel->AddCurve("Численное решение", reshenie_list, Color::Red,SymbolType::Plus);
+		LineItem^ Curve2 = panel->AddCurve("Точное решение", tochnoe_list, Color::Blue, SymbolType::Plus);
 
 		// Устанавливаем интересующий нас интервал по оси X
 		panel->XAxis->Scale->Min = xmin_limit;
