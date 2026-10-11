@@ -445,6 +445,7 @@ namespace Graph {
 		PointPairList^ reshenie_list = gcnew ZedGraph::PointPairList();
 		PointPairList^ tochnoe_list = gcnew ZedGraph::PointPairList();
 
+
 		// Интервал, где есть данные
 		double xmin = Convert::ToDouble(textBox1->Text);
 		double xmax = Convert::ToDouble(textBox2->Text);
@@ -453,17 +454,12 @@ namespace Graph {
 		double h2i = hi / 2;
 
 		double _k1, _k2, _k3, _k4;
-		double _k1_2, _k2_2, _k3_2, _k4_2;
 
 		double xmin_limit = xmin - 0.1;
 		double xmax_limit = xmax + 0.1;
-/*
-		double ymin_limit = -1.0;
-		double ymax_limit = 100.0;
 
 
-*/
-		// Список точек
+
 		int i = 0;
 		double xi = xmin;
 		double vi = Convert::ToDouble(textBox5->Text);
@@ -474,7 +470,22 @@ namespace Graph {
 		double C = ui / exp(2 * xi);
 
 		double S = (v2i - vi) / (pow(2, 4) - 1);
+		double eps = Convert::ToDouble(textBox5->Text);
 		double OLP = S * pow(2, 4);
+		double maxOLP = OLP;
+
+		int C1 = 0;
+		int C2 = 0;
+
+		double max_hi = hi;
+		double max_xi = xi;
+
+		double min_hi = hi;
+		double min_xi = xi;
+
+		double ui_vi = fabs(ui - vi);
+		double max_ui_vi = ui_vi;
+		double max_xi_ui_vi = xi;
 
 		int Nmax = Convert::ToInt32(textBox4->Text);
 
@@ -494,85 +505,227 @@ namespace Graph {
 
 		i++;
 
-		while (xi + hi <= xmax && i <= Nmax)
-		{
-			dataGridView1->Rows->Add();
-			dataGridView1->Rows[i]->Cells[0]->Value = i;
+		if (this->checkBox1->Checked == true) {
+			while (xi + hi <= xmax && i <= Nmax)
+			{
+				dataGridView1->Rows->Add();
+				dataGridView1->Rows[i]->Cells[0]->Value = i;
 
-			// считаем коэффициенты для траектории с половинным шагом
-			_k1 = k1(xi, v2i);
-			_k2 = k2(xi, v2i, _k1, h2i);
-			_k3 = k3(xi, v2i, _k2, h2i);
-			_k4 = k4(xi, v2i, _k1, _k2, _k3, h2i);
+				// считаем коэффициенты для траектории с половинным шагом
+				_k1 = k1(xi, v2i);
+				_k2 = k2(xi, v2i, _k1, h2i);
+				_k3 = k3(xi, v2i, _k2, h2i);
+				_k4 = k4(xi, v2i, _k1, _k2, _k3, h2i);
 
-			// траектория с половинным шагом
-			v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
+				// траектория с половинным шагом
+				v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
 
-			// считаем коэффициенты для траектории с половинным шагом
-			_k1 = k1(xi + h2i, v2i);
-			_k2 = k2(xi + h2i, v2i, _k1, h2i);
-			_k3 = k3(xi + h2i, v2i, _k2, h2i);
-			_k4 = k4(xi + h2i, v2i, _k1, _k2, _k3, h2i);
+				// считаем коэффициенты для траектории с половинным шагом
+				_k1 = k1(xi + h2i, v2i);
+				_k2 = k2(xi + h2i, v2i, _k1, h2i);
+				_k3 = k3(xi + h2i, v2i, _k2, h2i);
+				_k4 = k4(xi + h2i, v2i, _k1, _k2, _k3, h2i);
 
-			// траектория с половинным шагом
-			v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
+				// траектория с половинным шагом
+				v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
 
-			dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
-			
-
-
-
-			// коэффициенты для траектории с обычным шагом
-			_k1 = k1(xi, vi);
-			_k2 = k2(xi, vi, _k1, hi);
-			_k3 = k3(xi, vi, _k2, hi);
-			_k4 = k4(xi, vi, _k1, _k2, _k3, hi);
-
-			vi_ = vi;  // сохраняем v(n) в отдельную переменную
-			vi = next_v(vi, hi, _k1, _k2, _k3, _k4);  // считаем v(n+1)
-			dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
-
-			dataGridView1->Rows[i]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
+				dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
 
 
-			// коэффициенты для ОЛП
-			_k1 = k1(xi, vi_);
-			_k2 = k2(xi, vi_, _k1, h2i);
-			_k3 = k3(xi, vi_, _k2, h2i);
-			_k4 = k4(xi, vi_, _k1, _k2, _k3, h2i);
 
-			vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
 
-			_k1 = k1(xi + h2i, vi_);
-			_k2 = k2(xi + h2i, vi_, _k1, h2i);
-			_k3 = k3(xi + h2i, vi_, _k2, h2i);
-			_k4 = k4(xi + h2i, vi_, _k1, _k2, _k3, h2i);
+				// коэффициенты для траектории с обычным шагом
+				_k1 = k1(xi, vi);
+				_k2 = k2(xi, vi, _k1, hi);
+				_k3 = k3(xi, vi, _k2, hi);
+				_k4 = k4(xi, vi, _k1, _k2, _k3, hi);
 
-			vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+				vi_ = vi;  // сохраняем v(n) в отдельную переменную
+				vi = next_v(vi, hi, _k1, _k2, _k3, _k4);  // считаем v(n+1)
+				dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
 
-			S = (vi_ - vi) / (pow(2, 4) - 1);
-			OLP = S * pow(2, 4);
+				dataGridView1->Rows[i]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
 
-			dataGridView1->Rows[i]->Cells[5]->Value = floor(OLP * 100000) / 100000;
+
+				// коэффициенты для ОЛП
+				_k1 = k1(xi, vi_);
+				_k2 = k2(xi, vi_, _k1, h2i);
+				_k3 = k3(xi, vi_, _k2, h2i);
+				_k4 = k4(xi, vi_, _k1, _k2, _k3, h2i);
+
+				vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+				_k1 = k1(xi + h2i, vi_);
+				_k2 = k2(xi + h2i, vi_, _k1, h2i);
+				_k3 = k3(xi + h2i, vi_, _k2, h2i);
+				_k4 = k4(xi + h2i, vi_, _k1, _k2, _k3, h2i);
+
+				vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+				S = (vi_ - vi) / (pow(2, 4) - 1);
+				OLP = S * pow(2, 4);
+
+				if (fabs(OLP) > maxOLP) {
+					maxOLP = fabs(OLP);
+				}
+
 				
-			
-			
-			
-			dataGridView1->Rows[i]->Cells[6]->Value = hi;
+
+				dataGridView1->Rows[i]->Cells[5]->Value = floor(OLP * 100000) / 100000;
 
 
-			xi = xi + hi;
-			dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
 
-			reshenie_list->Add(xi, vi);
 
-			ui = C * exp(2 * xi);
-			tochnoe_list->Add(xi, ui);
-			dataGridView1->Rows[i]->Cells[9]->Value = floor(ui * 1000) / 1000;
-			dataGridView1->Rows[i]->Cells[10]->Value = floor(fabs(ui - vi) * 10000) / 10000;
+				dataGridView1->Rows[i]->Cells[6]->Value = hi;
 
-			i++;
+
+				xi = xi + hi;
+				dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
+
+				reshenie_list->Add(xi, vi);
+
+				ui = C * exp(2 * xi);
+				tochnoe_list->Add(xi, ui);
+				dataGridView1->Rows[i]->Cells[9]->Value = floor(ui * 1000) / 1000;
+				dataGridView1->Rows[i]->Cells[10]->Value = floor(fabs(ui - vi) * 10000) / 10000;
+
+				if (max_ui_vi < fabs(ui - vi)) {
+					max_ui_vi = fabs(ui - vi);
+					max_xi_ui_vi = xi;
+				}
+
+				i++;
+			}
 		}
+
+		else {
+			dataGridView1->Rows[0]->Cells[7]->Value = 0;
+			dataGridView1->Rows[0]->Cells[8]->Value = 0;
+
+			while (xi + hi <= xmax && i <= Nmax)
+			{
+				double old_vi = vi;
+				double old_v2i = v2i;
+
+
+				// считаем коэффициенты для траектории с половинным шагом
+				_k1 = k1(xi, v2i);
+				_k2 = k2(xi, v2i, _k1, h2i);
+				_k3 = k3(xi, v2i, _k2, h2i);
+				_k4 = k4(xi, v2i, _k1, _k2, _k3, h2i);
+
+				// траектория с половинным шагом
+				v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
+
+				// считаем коэффициенты для траектории с половинным шагом
+				_k1 = k1(xi + h2i, v2i);
+				_k2 = k2(xi + h2i, v2i, _k1, h2i);
+				_k3 = k3(xi + h2i, v2i, _k2, h2i);
+				_k4 = k4(xi + h2i, v2i, _k1, _k2, _k3, h2i);
+
+				// траектория с половинным шагом
+				v2i = next_v(v2i, h2i, _k1, _k2, _k3, _k4);
+
+				
+
+				// коэффициенты для траектории с обычным шагом
+				_k1 = k1(xi, vi);
+				_k2 = k2(xi, vi, _k1, hi);
+				_k3 = k3(xi, vi, _k2, hi);
+				_k4 = k4(xi, vi, _k1, _k2, _k3, hi);
+
+				vi_ = vi;  // сохраняем v(n) в отдельную переменную
+				vi = next_v(vi, hi, _k1, _k2, _k3, _k4);  // считаем v(n+1)
+
+
+
+				// коэффициенты для ОЛП
+				_k1 = k1(xi, vi_);
+				_k2 = k2(xi, vi_, _k1, h2i);
+				_k3 = k3(xi, vi_, _k2, h2i);
+				_k4 = k4(xi, vi_, _k1, _k2, _k3, h2i);
+
+				vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+				_k1 = k1(xi + h2i, vi_);
+				_k2 = k2(xi + h2i, vi_, _k1, h2i);
+				_k3 = k3(xi + h2i, vi_, _k2, h2i);
+				_k4 = k4(xi + h2i, vi_, _k1, _k2, _k3, h2i);
+
+				vi_ = next_v(vi_, h2i, _k1, _k2, _k3, _k4);
+
+				S = (vi_ - vi) / (pow(2, 4) - 1);
+
+				if (fabs(S) > eps) {
+					vi = old_vi;
+					v2i = old_v2i;
+					hi = hi / 2;
+					h2i = hi / 2;
+
+					C1++;
+					
+					continue;
+				}
+				else {
+					dataGridView1->Rows->Add();
+
+					dataGridView1->Rows[i]->Cells[6]->Value = hi;
+					xi = xi + hi;
+					dataGridView1->Rows[i]->Cells[1]->Value = floor(xi * 1000) / 1000;
+
+					if (hi > max_hi) {
+						max_hi = hi;
+						max_xi = xi;
+					}
+
+					if (hi < min_hi) {
+						min_hi = hi;
+						min_xi = xi;
+					}
+
+
+					if (fabs(S) < eps / pow(2, 5)) {
+						hi = 2 * hi;
+						h2i = hi / 2;
+
+						C2++;
+					}
+
+
+					OLP = S * pow(2, 4);
+
+					if (fabs(OLP) > maxOLP) {
+						maxOLP = fabs(OLP);
+					}
+
+					dataGridView1->Rows[i]->Cells[5]->Value = floor(OLP * 100000) / 100000;
+
+					ui = C * exp(2 * xi);
+					tochnoe_list->Add(xi, ui);
+					dataGridView1->Rows[i]->Cells[9]->Value = floor(ui * 1000) / 1000;
+					dataGridView1->Rows[i]->Cells[10]->Value = floor(fabs(ui - vi) * 10000) / 10000;
+
+					if (max_ui_vi < fabs(ui - vi)) {
+						max_ui_vi = fabs(ui - vi);
+						max_xi_ui_vi = xi;
+					}
+
+					reshenie_list->Add(xi, vi);
+
+					dataGridView1->Rows[i]->Cells[3]->Value = floor(v2i * 1000) / 1000;
+					dataGridView1->Rows[i]->Cells[2]->Value = floor(vi * 1000) / 1000;
+					dataGridView1->Rows[i]->Cells[4]->Value = floor((vi - v2i) * 1000) / 1000;
+
+
+					dataGridView1->Rows[i]->Cells[0]->Value = i;
+					dataGridView1->Rows[i]->Cells[7]->Value = C1;
+					dataGridView1->Rows[i]->Cells[8]->Value = C2;
+
+					i++;
+				}
+			}		
+		}
+
 
 		LineItem^ Curve1 = panel->AddCurve("Численное решение", reshenie_list, Color::Red,SymbolType::Plus);
 		LineItem^ Curve2 = panel->AddCurve("Точное решение", tochnoe_list, Color::Blue, SymbolType::Plus);
@@ -591,6 +744,18 @@ namespace Graph {
 		zedGraphControl1->AxisChange();
 		// Обновляем график
 		zedGraphControl1->Invalidate();
+
+
+		MessageBox::Show(
+			"n = " + (i-1).ToString() + "\t" +
+			"b - x_n = " + (xmax - xi).ToString("F6") + "\r\n" +
+			"max |ОЛП| = " + maxOLP.ToString("F6") + "\r\n" +
+			"Общее число делений: " + C1.ToString() + "\r\n" +
+			"Общее число удвоений: " + C2.ToString() + "\r\n" +
+			"max|ui - vi|: " + max_ui_vi.ToString("F6") + " при x =" + max_xi_ui_vi.ToString("F6") + "\r\n" +
+			"max hi = " + max_hi.ToString("F6") + " при x = " + max_xi.ToString("F6") + "\r\n" +
+			"min hi = " + min_hi.ToString("F6") + " при x = " + min_xi.ToString("F6"),
+			"Результаты");
 
 	}
 	private: System::Void zedGraphControl1_Load(System::Object^  sender, System::EventArgs^  e) {
