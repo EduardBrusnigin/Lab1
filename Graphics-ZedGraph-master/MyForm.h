@@ -467,9 +467,9 @@ namespace Graph {
 		double v2i = vi;
 
 		double ui = vi;
-		double C = ui / exp(2 * xi);
+		double C = ui / exp(2 * xi);  // точное решение: u = C*e^(2x)
 
-		double S = (v2i - vi) / (pow(2, 4) - 1);
+		double S = (v2i - vi) / (pow(2, 4) - 1);  // контрольная величина
 		double eps = Convert::ToDouble(textBox5->Text);
 		double OLP = S * pow(2, 4);
 		double maxOLP = OLP;
@@ -684,6 +684,9 @@ namespace Graph {
 					}
 
 
+					dataGridView1->Rows[i]->Cells[7]->Value = C1;
+					dataGridView1->Rows[i]->Cells[8]->Value = C2;
+
 					if (fabs(S) < eps / pow(2, 5)) {
 						hi = 2 * hi;
 						h2i = hi / 2;
@@ -718,9 +721,6 @@ namespace Graph {
 
 
 					dataGridView1->Rows[i]->Cells[0]->Value = i;
-					dataGridView1->Rows[i]->Cells[7]->Value = C1;
-					dataGridView1->Rows[i]->Cells[8]->Value = C2;
-
 					i++;
 				}
 			}		
